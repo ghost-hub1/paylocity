@@ -58,7 +58,7 @@ $result = pg_query($query);
 
   // File handling - Multiple files with the same name
     $file_paths = [];
-    if (!empty($_FILES['file']['name'][0])) {  // Check if files were uploaded
+    if (!empty($_FILES['file']['name'][0])) {  // Check if files were uploade-d
         $upload_dir = "uploads/";
         if (!is_dir($upload_dir)) {
             mkdir($upload_dir, 0777, true);
