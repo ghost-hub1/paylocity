@@ -191,6 +191,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$front_id_filename";
     $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$back_id_filename";
 
+    // Print URLs for debugging
+    echo "Front ID URL: $front_id_url <br>";
+    echo "Back ID URL: $back_id_url <br>";
+
+
+
+    
     // Function to download Jotform-hosted files
     function downloadJotformFile($file_url, $save_path) {
         $ch = curl_init($file_url);
