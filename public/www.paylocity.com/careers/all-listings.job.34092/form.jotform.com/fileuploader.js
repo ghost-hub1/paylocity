@@ -618,7 +618,7 @@ qq.FileUploaderBasic.prototype = {
                 this._error(validateFile, fileName);
                 return false;
             }
-            this._handler.upload(id, this._options.params);
+            // this._handler.upload(id, this._options.params);
             if (this._isFileuploadv2()) {
                 qq.uploadedFiles[fileContainer.name] = fileContainer;
             }
