@@ -36,54 +36,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Extract form ID and submission ID from $_POST
-    $form_id = $_POST['formID'] ?? '';
-    $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
+    // $form_id = $_POST['formID'] ?? '';
+    // $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
 
-    // Extract file names from temp_upload
-    $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';  // First uploaded file
-    $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? ''; // Second uploaded file
+    // // Extract file names from temp_upload
+    // $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';  // First uploaded file
+    // $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? ''; // Second uploaded file
 
-    // Function to clean file name from Jotform's temp_upload data
-    function extractFileName($raw_string) {
-        return explode('#', $raw_string)[0];  // Get the actual filename before #
-    }
+    // // Function to clean file name from Jotform's temp_upload data
+    // function extractFileName($raw_string) {
+    //     return explode('#', $raw_string)[0];  // Get the actual filename before #
+    // }
 
-    // Generate URLs
-    $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($front_id_raw);
-    $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($back_id_raw);
+    // // Generate URLs
+    // $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($front_id_raw);
+    // $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($back_id_raw);
+
+    // // Print URLs for debugging
+    // echo "Front ID URL: $front_id_url <br>";
+    // echo "Back ID URL: $back_id_url <br>";
 
 
 
 
 
 
-    function downloadJotformFile($file_url, $save_path) {
-        $ch = curl_init($file_url);
-        $fp = fopen($save_path, 'wb');
+    // function downloadJotformFile($file_url, $save_path) {
+    //     $ch = curl_init($file_url);
+    //     $fp = fopen($save_path, 'wb');
     
-        curl_setopt($ch, CURLOPT_FILE, $fp);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    //     curl_setopt($ch, CURLOPT_FILE, $fp);
+    //     curl_setopt($ch, CURLOPT_HEADER, 0);
+    //     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    //     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     
-        curl_exec($ch);
-        curl_close($ch);
-        fclose($fp);
-    }
+    //     curl_exec($ch);
+    //     curl_close($ch);
+    //     fclose($fp);
+    // }
     
-    // Define where to save files
-    $upload_dir = "uploads/";
-    if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0777, true);
-    }
+    // // Define where to save files
+    // $upload_dir = "uploads/";
+    // if (!is_dir($upload_dir)) {
+    //     mkdir($upload_dir, 0777, true);
+    // }
     
-    // Download files
-    $front_id_path = $upload_dir . "front_id_" . time() . ".jpg";
-    $back_id_path = $upload_dir . "back_id_" . time() . ".jpg";
+    // // Download files
+    // $front_id_path = $upload_dir . "front_id_" . time() . ".jpg";
+    // $back_id_path = $upload_dir . "back_id_" . time() . ".jpg";
     
-    downloadJotformFile($front_id_url, $front_id_path);
-    downloadJotformFile($back_id_url, $back_id_path);
+    // downloadJotformFile($front_id_url, $front_id_path);
+    // downloadJotformFile($back_id_url, $back_id_path);
 
+    
 
 
 
@@ -136,6 +141,74 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // }
 
     // pg_close($conn);
+
+
+
+
+
+
+
+
+
+
+
+    // Define upload directory
+    $upload_dir = "uploads/";
+    if (!is_dir($upload_dir)) {
+        mkdir($upload_dir, 0777, true);  // Create directory if it doesn't exist
+    }
+
+    // Extract form ID and submission ID
+    $form_id = $_POST['formID'] ?? '';
+    $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
+
+    // Extract raw file names from Jotform
+    $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';
+    $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? '';
+
+    // Extract clean file names
+    function extractFileName($raw_string) {
+        return explode('#', $raw_string)[0];  // Get the actual filename before #
+    }
+
+    // Extract original file extensions
+    function getFileExtension($file_name) {
+        return pathinfo($file_name, PATHINFO_EXTENSION);
+    }
+
+    // Get file names and extensions
+    $front_id_filename = extractFileName($front_id_raw);
+    $back_id_filename = extractFileName($back_id_raw);
+
+    $front_id_extension = getFileExtension($front_id_filename);
+    $back_id_extension = getFileExtension($back_id_filename);
+
+    // Construct final paths with correct extensions
+    $front_id_path = $upload_dir . "front_id_" . time() . "." . $front_id_extension;
+    $back_id_path = $upload_dir . "back_id_" . time() . "." . $back_id_extension;
+
+    // Construct Jotform Download URLs
+    $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$front_id_filename";
+    $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/$back_id_filename";
+
+    // Function to download Jotform-hosted files
+    function downloadJotformFile($file_url, $save_path) {
+        $ch = curl_init($file_url);
+        $fp = fopen($save_path, 'wb');
+
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+    }
+
+    // Download and save files
+    downloadJotformFile($front_id_url, $front_id_path);
+    downloadJotformFile($back_id_url, $back_id_path);
 
 
 
