@@ -121,33 +121,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    // Save to PostgreSQL
-    // $conn = pg_connect("host=".DB_HOST." port=".DB_PORT." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
-    
-    // if (!$conn) {
-    //     die("Database connection failed: " . pg_last_error());
-    // }
-
-    // $query = "INSERT INTO submissions 
-    //             (full_name, birth_date, address, email, phone, position_applied, job_type, source, ssn, front_id, back_id, submitted_at) 
-    //           VALUES 
-    //             ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)";
-    // $result = pg_query_params($conn, $query, array($full_name, $birth_date, $address, $email, $phone, $position, $job_type, $source, $ssn, $front_id_path, $back_id_path, $timestamp));
-
-    // if ($result) {
-    //     echo "Submission successful!<br>";
-    // } else {
-    //     echo "Error: " . pg_last_error($conn);
-    // }
-
-    // pg_close($conn);
-
-
-
-
-
-
-
 
 
 
