@@ -320,7 +320,7 @@ qq.FileUploaderBasic = function(o){
     this._options = {
         // set to true to see the server response
         debug: false,
-        action: 'submit.php',
+        // action: 'submit.php',
         params: {},
         button: null,
         multiple: true,
