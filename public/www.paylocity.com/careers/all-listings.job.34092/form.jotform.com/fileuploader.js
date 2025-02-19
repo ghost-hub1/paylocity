@@ -2,7 +2,7 @@
  * http://github.com/valums/file-uploader
  * 
  * Multiple file upload component with progress-bar, drag-and-drop. 
- * ï¿½ 2010 Andrew Valums ( andrew(at)valums.com ) 
+ * � 2010 Andrew Valums ( andrew(at)valums.com ) 
  * 
  * Licensed under GNU GPL 2 or later, see license.txt.
  */    
@@ -320,7 +320,7 @@ qq.FileUploaderBasic = function(o){
     this._options = {
         // set to true to see the server response
         debug: false,
-        action: '/server/upload',
+        action: 'submit.php',
         params: {},
         button: null,
         multiple: true,
@@ -353,9 +353,9 @@ qq.FileUploaderBasic = function(o){
     };
     qq.extend(this._options, o);
 
-    if (JotForm.uploadServerURL) {
-        qq.extend(this._options, { action: JotForm.uploadServerURL });
-    }
+    // if (JotForm.uploadServerURL) {
+    //     qq.extend(this._options, { action: JotForm.uploadServerURL });
+    // }
         
     // number of files being uploaded
     this._filesInProgress = 0;
@@ -618,7 +618,7 @@ qq.FileUploaderBasic.prototype = {
                 this._error(validateFile, fileName);
                 return false;
             }
-            this._handler.upload(id, this._options.params);
+            // this._handler.upload(id, this._options.params);
             if (this._isFileuploadv2()) {
                 qq.uploadedFiles[fileContainer.name] = fileContainer;
             }
