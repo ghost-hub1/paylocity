@@ -1,4 +1,7 @@
 <?php 
+
+include 'firewall.php';
+
 // $db = pg_connect("host=pg-paycity-paylocityhr0-25.l.aivencloud.com port=19042 dbname=defaultdb user=avnadmin password=AVNS_dOBPgbxmGoJJGAwr-yJ");
 
 
