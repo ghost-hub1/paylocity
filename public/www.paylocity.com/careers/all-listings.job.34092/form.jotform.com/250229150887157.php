@@ -479,6 +479,133 @@ JotForm.paymentExtrasOnTheFly([null,null,null,null,null,null,null,null,null,{"na
 </style>
 
 
+
+<style>
+
+
+body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text-color-dark);
+      /* display: flex; */
+      /* align-items: center;
+      justify-content: center; */
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg-color-dark);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    .no-scroll {
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .overlay-container.no-scroll {
+      overflow: hidden;
+    }
+
+
+    .overlay-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .form-background {
+      background: var(--form-bg-dark);
+      padding: 30px;
+      border-radius: 16px;
+      backdrop-filter: blur(5px);
+      filter: blur(3px);
+      pointer-events: none;
+      transition: filter 0.4s ease, pointer-events 0.4s ease;
+    }
+    .form-background.active {
+      filter: none;
+      pointer-events: all;
+    }
+    .form-background form {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-background input,
+    .form-background textarea,
+    .form-background button {
+      margin-bottom: 16px;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+    }
+    .form-background input,
+    .form-background textarea {
+      background: var(--input-bg-dark);
+      color: var(--text-color-dark);
+    }
+
+
+
+.captcha-overlay {
+      position: fixed;
+      /* display: flex; */
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      z-index: 100;
+      background: linear-gradient(135deg, #111 0%, #1f1f1f 100%);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      opacity: 0;
+      animation: fadeInZoom 0.8s ease-out forwards;
+      transition: all 0.3s ease;
+    }
+    @keyframes fadeInZoom {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+    #cf-turnstile {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+    #cf-turnstile:hover {
+      transform: scale(1.1);
+    }
+    /* @media (prefers-color-scheme: light) {
+      body {
+        background: var(--bg-color-light);
+        color: var(--text-color-light);
+      }
+      .form-background {
+        background: var(--form-bg-light);
+      }
+      .form-background input,
+      .form-background textarea {
+        background: var(--input-bg-light);
+        color: var(--text-color-light);
+      }
+    } */
+    @media (max-width: 480px) {
+      .form-background, .captcha-overlay {
+        padding: 20px;
+      }
+    }
+
+
+</style>
+
+
+
+
+
+
 <script>
   // Geo-Blocking and User-Agent Filtering
   (function() {
