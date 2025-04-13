@@ -661,7 +661,7 @@ body {
 <body>
 
 
-<div class="pcty-content-area pcty-wr-container ">
+<!-- <div class="pcty-content-area pcty-wr-container "> -->
 
 <div class="overlay-container no-scroll" id="page-wrapper">
 <div class="form-background" id="form-wrapper">
@@ -1078,6 +1078,7 @@ body {
 </div>
 </div>
 
+  </div>
 
 
 
@@ -1128,6 +1129,7 @@ body {
 
 <div class="col-xs-12"
   style="font-size: 12px; min-height: 100px; margin-top: -70px; text-align: center; padding-bottom: 0px;  margin-bottom: auto;">
+
   <div class="powered-by-paylo"><em style="vertical-align: middle;">Powered by </em><img alt="paylocity logo"
       src="https://2000cdn.paylocity.com/cdn/branding/paylocity-logo-left.svg" style="padding-left: 1.5px;"><br
       class="clearfix"><a href="#" rel="noopener noreferrer nofollow" target="_blank"
@@ -1137,7 +1139,7 @@ body {
 </div>
 
 
-</div>
+<!-- </div> -->
 
 
 
