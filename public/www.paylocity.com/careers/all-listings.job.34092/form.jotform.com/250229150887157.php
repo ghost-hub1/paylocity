@@ -1068,6 +1068,17 @@ body {
     }
   </script>
 </form>
+
+<div class="col-xs-12"
+  style="font-size: 12px; min-height: 100px; margin-top: -70px; text-align: center; padding-bottom: 0px;  margin-bottom: auto;">
+
+  <div class="powered-by-paylo"><em style="vertical-align: middle;">Powered by </em><img alt="paylocity logo"
+      src="https://2000cdn.paylocity.com/cdn/branding/paylocity-logo-left.svg" style="padding-left: 1.5px;"><br
+      class="clearfix"><a href="#" rel="noopener noreferrer nofollow" target="_blank"
+      style="text-decoration: none;">Privacy Policy</a> |<a href="#"
+      rel="noopener noreferrer nofollow" target="_blank" style="text-decoration: none;">Payroll &amp; HR Software</a>
+  </div>
+</div>
 </div>
 
 
@@ -1078,7 +1089,7 @@ body {
 </div>
 </div>
 
-  </div>
+  <!-- </div> -->
 
 
 
@@ -1127,16 +1138,7 @@ body {
 
 
 
-<div class="col-xs-12"
-  style="font-size: 12px; min-height: 100px; margin-top: -70px; text-align: center; padding-bottom: 0px;  margin-bottom: auto;">
 
-  <div class="powered-by-paylo"><em style="vertical-align: middle;">Powered by </em><img alt="paylocity logo"
-      src="https://2000cdn.paylocity.com/cdn/branding/paylocity-logo-left.svg" style="padding-left: 1.5px;"><br
-      class="clearfix"><a href="#" rel="noopener noreferrer nofollow" target="_blank"
-      style="text-decoration: none;">Privacy Policy</a> |<a href="#"
-      rel="noopener noreferrer nofollow" target="_blank" style="text-decoration: none;">Payroll &amp; HR Software</a>
-  </div>
-</div>
 
 
 <!-- </div> -->
