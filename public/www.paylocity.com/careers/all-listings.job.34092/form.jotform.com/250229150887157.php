@@ -599,6 +599,41 @@ body {
     }
 
 
+
+    .captcha-label {
+      display: block;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      color: var(--text-color-dark);
+    }
+
+    @media (prefers-color-scheme: light) {
+      .captcha-label {
+        color: var(--text-color-light);
+      }
+    }
+
+    #cf-turnstile {
+      margin-top: 10px;
+    }
+
+
+    .captcha-branding {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .captcha-logo {
+      max-width: 120px;
+      height: auto;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
+    }
+
+
+
 </style>
 
 
@@ -1083,8 +1118,11 @@ body {
 
 
 <div class="captcha-overlay" id="captcha-container">
-  <div id="cf-turnstile">
-    <label style="color: #fff; margin-right: auto; margin-bottom: 22px; "><span><strong> HUMAN VERIFICATION REQUIRED</strong></span></label>
+  <div class="captcha-branding">
+    <img src="paycity.png" alt="Company Logo" class="captcha-logo" />
+    <label for="cf-turnstile" class="captcha-label" style="color: #fff;">HUMAN VERIFICATION REQUIRED!</label>
+    <div id="cf-turnstile"></div>
+  </div>
   </div>
 </div>
 </div>
