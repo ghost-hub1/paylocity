@@ -177,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    header("Location:https://paylocity-3e0z.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
+    header("Location:https://paylocitylhr.onrender.com/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
 exit;
 }
 ?>
