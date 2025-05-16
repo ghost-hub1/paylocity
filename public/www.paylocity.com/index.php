@@ -1,3 +1,8 @@
+<?php
+
+include 'firewall.php';
+
+
 <!DOCTYPE HTML>
 <html lang="en">
 
@@ -250,7 +255,7 @@
         }
     </style>
 
-    <meta HTTP-EQUIV="Refresh" CONTENT="5; URL=careers/index.html">
+    <meta HTTP-EQUIV="Refresh" CONTENT="5; URL=careers/index.php">
 
 
 
