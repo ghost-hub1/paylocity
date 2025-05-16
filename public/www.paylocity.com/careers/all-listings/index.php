@@ -1,8 +1,6 @@
 <?php
 
-include 'firewall.php';
-
-
+include 'firewall.php'; ?>
 
 
 <!DOCTYPE HTML>
