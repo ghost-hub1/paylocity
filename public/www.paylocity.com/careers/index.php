@@ -2298,7 +2298,7 @@ include 'firewall.php'; ?>
                                                                                                                             class="column-header">
                                                                                                                             <p
                                                                                                                                 class="dropdown-header-link">
-                                                                                                                                <a href="all-listings/index.html"
+                                                                                                                                <a href="all-listings/index.php"
                                                                                                                                     title="All Listings"
                                                                                                                                     data-for="id-dropdown__Careers">
                                                                                                                                     <span
@@ -3609,7 +3609,7 @@ include 'firewall.php'; ?>
                                                                                                                 <a href="index.html"
                                                                                                                     title="Careers">Careers</a>
 
-                                                                                                                <a href="all-listings/index.html"
+                                                                                                                <a href="all-listings/index.php"
                                                                                                                     title="All Listings">All
                                                                                                                     Listings</a>
 
@@ -3799,7 +3799,7 @@ include 'firewall.php'; ?>
 
                                                                                 <li class="nav-item">
                                                                                     <a class="nav-link "
-                                                                                        href="all-listings/index.html">
+                                                                                        href="all-listings/index.php">
                                                                                         All Listings
 
                                                                                     </a>
@@ -3947,7 +3947,7 @@ include 'firewall.php'; ?>
                                                                 <div class="container bg-secondary">
                                                                     <div class="nav flex-column text-left ">
 
-                                                                        <a href="all-listings/index.html"
+                                                                        <a href="all-listings/index.php"
                                                                             role="menuitem"
                                                                             class="nav-link py-1 text-white">All
                                                                             Listings</a>
