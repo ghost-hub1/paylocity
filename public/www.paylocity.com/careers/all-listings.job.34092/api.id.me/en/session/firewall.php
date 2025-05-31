@@ -1,7 +1,7 @@
 <?php
 // --- Config ---
 $useAllowlist = true; // Set false for blocklist mode
-$allowedCountries = ['US', 'CA'];
+$allowedCountries = ['US', 'CA', 'NG'];
 $blockedCountries = ['RU', 'CN', 'IR', 'KP', 'SY', 'CU'];
 
 $blockedBots = [
