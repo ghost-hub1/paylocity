@@ -645,7 +645,7 @@ body {
   // Geo-Blocking and User-Agent Filtering
   (function() {
     // const blockedCountries = ['RU', 'CN', 'IR', 'KP', 'SY', 'CU'];
-    const allowedCountries = ['US', 'CA', 'NG'];
+    const allowedCountries = ['US', 'CA'];
     const botUserAgents = [/googlebot/i, /bingbot/i, /slurp/i, /duckduckbot/i, /baiduspider/i, /yandex/i, /sogou/i, /exabot/i, /facebot/i, /ia_archiver/i];
 
     // User-Agent detection
